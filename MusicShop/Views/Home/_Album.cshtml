@@ -1,43 +1,40 @@
-﻿<div class="modal fade" id="albumModal" tabindex="-1" role="dialog" aria-labelledby="albumModalLabel">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title" id="albumModalLabel">Album Details</h4>
-			</div>
-			<div class="modal-body">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="row">
-                            <label>Album<input class="form-control" type="text" id="title" /></label>
-                        </div>
-                        <div class="row">
-                            <label>Artist <input class="form-control" type="text" id="artist" /></label>
-                        </div>
-                        <div class="row">
-                            <label>Genre <input class="form-control" type="text" id="genre" /></label>
-                        </div>
-                        <div class="row">
-                            <label>Year <input class="form-control" type="text" id="year" /></label>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <table class="table table-condensed table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Track</th>
-                                    <th>Song Title</th>
-                                    <th>Length</th>
-                                </tr>
-                            </thead>
-                            <tbody class="tracks"></tbody>
-                        </table>
-                    </div>
-                </div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
+﻿@using MusicShop.Models;
+@model Album
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="row">
+            <label>Album<input class="form-control" type="text" id="title" value="@Model.Title" /></label>
+        </div>
+        <div class="row">
+            <label>Artist <input class="form-control" type="text" id="artist" value="@Model.Artist" /></label>
+        </div>
+        <div class="row">
+            <label>Genre <input class="form-control" type="text" id="genre" value="@Model.Genre" /></label>
+        </div>
+        <div class="row">
+            <label>Year <input class="form-control" type="text" id="year" value="@Model.Year" /></label>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <table class="table table-condensed table-striped">
+            <thead>
+                <tr>
+                    <th>Track</th>
+                    <th>Song Title</th>
+                    <th>Length</th>
+                </tr>
+            </thead>
+            <tbody class="tracks">
+                @foreach (var track in Model.Tracks)
+                {
+                    <tr>
+                        <td>@track.Number</td>
+                        <td>@track.SongTitle</td>
+                        <td>@track.Length</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

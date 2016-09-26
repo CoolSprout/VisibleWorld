@@ -1,0 +1,27 @@
+﻿@model List<MusicShop.Models.Album>
+@{
+    Layout = null;
+}
+<div class="col-md-12">
+    <table class="table table-hover table-striped table-condensed">
+        <thead>
+            <tr>
+                <th>Album</th>
+                <th>Artist</th>
+                <th>Genre</th>
+                <th>Year</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var album in Model)
+            {
+                <tr data-toggle="modal" data-target="#albumModal" data-url="@Url.Action("Album", new { id = album.Id })">
+                    <td>@album.Title</td>
+                    <td>@album.Artist</td>
+                    <td>@album.Genre</td>
+                    <td>@album.Year</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,77 +1,88 @@
 ﻿@using MusicShop.Models;
 @model Store
-
 @{
     ViewBag.Title = "Home Page";
 }
-
-@using (Html.BeginForm())
+@using(@Ajax.BeginForm("Index", "Home",
+     new AjaxOptions
+     {
+         HttpMethod = "POST",
+         UpdateTargetId = "result"
+     }))
 {
-<div class="row">
-    <div class="col-md-10">
-        <input class="form-control" type="text" name="search" placeholder="Search"/>
+    <div class="row">
+        <div class="col-md-10">
+            <input class="form-control" type="text" name="search" placeholder="Search" />
+        </div>
+        <div class="col-md-2">
+            <input class="form-control" type="submit" value="Search" />
+        </div>
     </div>
-    <div class="col-md-2">
-        <input class="form-control" type="submit" value="Search" />
+    <div class="row">
+        <div class="col-md-12" style="text-align:right">
+            <a id="advancedSearch" href="#">Advanced Search</a>
+        </div>
     </div>
-</div>
-<div class="row">
-	<div class="col-md-12" style="text-align:right">
-		<a id="advancedSearch" href="#" >Advanced Search</a>
-	</div>
-</div>
-<div class="row advancedSearch">
-    <div class="col-md-4">
-        <select name="genre" class="form-control">
-            <option value="">Select a Genre</option>
-            @foreach(var genre in Model.Albums.Select(_ => _.Genre).Distinct())
-            {
-                <option value="@genre">@genre</option>
-            }
-        </select>
-    </div>
-    <div class="col-md-4">
-        <input class="form-control" type="number" name="fromYear" placeholder="From"/>
-    </div>
-    <div class="col-md-4">
-        <input class="form-control" type="number" name="toYear" placeholder="To"/>
-    </div>
-</div>
-}
-<div class="row">
-	<div class="col-md-12">
-		<table class="table table-hover table-striped table-condensed">
-			<thead>
-				<tr>
-					<th>Album</th>
-					<th>Artist</th>
-					<th>Genre</th>
-					<th>Year</th>
-				</tr>
-			</thead>
-			<tbody>
-				@foreach( var album in Model.Albums)
+    <div class="row advancedSearch">
+        <div class="col-md-4">
+            <select name="genre" class="form-control">
+                <option value="">Select a Genre</option>
+                @foreach (var genre in Model.Albums.Select(_ => _.Genre).Distinct())
                 {
-                    <tr data-toggle="modal" data-target="#albumModal" data-url="@Url.Action("Album", new { id = album.Id })">
-                        <td>@album.Title</td>
-                        <td>@album.Artist</td>
-                        <td>@album.Genre</td>
-                        <td>@album.Year</td>
-                    </tr>
+                    <option value="@genre">@genre</option>
                 }
-			</tbody>
-		</table>
-	</div>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <input class="form-control" type="number" name="fromYear" placeholder="From" />
+        </div>
+        <div class="col-md-4">
+            <input class="form-control" type="number" name="toYear" placeholder="To" />
+        </div>
+    </div>
+}
+<div class="row" id="result">
+    @{Html.RenderPartial("_SearchResults", Model.Albums);}
 </div>
-
+<div class="modal fade" id="albumModal" tabindex="-1" role="dialog" aria-labelledby="albumModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="albumModalLabel">Album Details</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts{
-      <script>
-          $('#albumModal').on('show.bs.modal', function (event) {
-              var modal = $(this);
-              var element = $(event.relatedTarget);
-              var url = element.data('url');
+    <script>
 
-              //TODO: Bind the results
-          })
-      </script>  
+        $(document).ready(function () {
+            $('.advancedSearch').hide();
+
+        });
+
+        $('#advancedSearch').on('click', function () {
+            $('.advancedSearch').toggle();
+            $("input[name='fromYear']").val('');
+            $("input[name='toYear']").val('');
+            $("select[name='genre']").val('');
+        });
+
+        $('#albumModal').on('show.bs.modal', function (event) {
+            var modal = $(this);
+            var element = $(event.relatedTarget);
+            var url = element.data('url');
+
+            //TODO: Bind the results
+            $.post(url, function (data) {
+                modal.find(".modal-body").html(data);
+            });
+        });
+    </script>
 }
